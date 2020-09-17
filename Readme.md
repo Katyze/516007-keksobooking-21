@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Катя Земскова](https://up.htmlacademy.ru/javascript/21/user/516007).
-* Наставник: [Евгений Алипкин] (https://htmlacademy.ru/profile/ealipkin).
+* Наставник: [Евгений Алипкин](https://htmlacademy.ru/profile/ealipkin).
 
 ---
 
