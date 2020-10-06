@@ -24,9 +24,6 @@ const mapElement = document.querySelector('.map');
 const mapPinsElement = mapElement.querySelector('.map__pins');
 const pinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
 
-const pins = [];
-
-
 mapElement.classList.remove('map--faded');
 
 // одно рандомное значение
@@ -41,14 +38,25 @@ function getRandomNumberRange(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
+function getRandomNumberOfArray(array) {
+  return Math.floor(Math.random() * array.length);
+}
+
+function getRandomOfArray(arr) {
+  const newArr = arr.slice(getRandomNumberOfArray(arr));
+  return newArr;
+}
+
 // создаем массив пинов
-const createPin = function (offersQuantity) {
+const createPins = function (offersQuantity) {
+  const pins = [];
+
   for (let i = 0; i < offersQuantity; i++) {
     const location = {
       x: getRandomNumberRange(PIN_LOCATION_X_MIN, PIN_LOCATION_X_MAX),
       y: getRandomNumberRange(PIN_LOCATION_Y_MIN, PIN_LOCATION_Y_MAX),
     };
-    pins[i] = {
+    const createElement = {
       author: {
         avatar: 'img/avatars/user' + AVATAR_NUMBERS[getRandomNumber(AVATAR_NUMBERS.length)] + '.png',
       },
@@ -61,7 +69,7 @@ const createPin = function (offersQuantity) {
         guests: getRandomNumberRange(MIN_GUESTS, MAX_GUESTS),
         checkin: TIME_CHECK_IN_OUT[getRandomNumber(TIME_CHECK_IN_OUT.length)],
         checkout: TIME_CHECK_IN_OUT[getRandomNumber(TIME_CHECK_IN_OUT.length)],
-        features: FEATURES[getRandomNumber(FEATURES.length)],
+        features: getRandomOfArray(FEATURES),
         description: 'Здесь будет ваше описание...',
         photos: PHOTOS[getRandomNumber(PHOTOS.length)],
       },
@@ -70,7 +78,9 @@ const createPin = function (offersQuantity) {
         y: location.y,
       },
     };
+    pins.push(createElement);
   }
+  return pins;
 };
 
 // создаем пин
@@ -87,9 +97,76 @@ const renderPin = function (offer) {
 };
 
 const fragment = document.createDocumentFragment();
-createPin(OFFERS_QUANTITY);
+const pins = createPins(OFFERS_QUANTITY);
 pins.forEach((item) => {
   fragment.appendChild(renderPin(item));
 });
 
 mapPinsElement.appendChild(fragment);
+
+
+// module3-task2
+const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
+const beforeBlock = document.querySelector('.map__filters-container');
+
+// создаем карточку
+const renderCard = function (card) {
+  const cardElement = cardTemplateElement.cloneNode(true);
+  const titleElement = cardElement.querySelector('.popup__title');
+  const addressElement = cardElement.querySelector('.popup__text--address');
+  const priceElement = cardElement.querySelector('.popup__text--price');
+  const typeElement = cardElement.querySelector('.popup__type');
+  const capacityElement = cardElement.querySelector('.popup__text--capacity');
+  const timeElement = cardElement.querySelector('.popup__text--time');
+  const featuresElement = cardElement.querySelector('.popup__features');
+  const descriptionElement = cardElement.querySelector('.popup__description');
+  const avatarElement = cardElement.querySelector('.popup__avatar');
+  const photosElement = cardElement.querySelector('.popup__photos');
+  const photoCloneElement = cardElement.querySelector('.popup__photo');
+  const offerTypes = {
+    flat: 'Квартира',
+    bungalow: 'Бунгало',
+    house: 'Дом',
+    palace: 'Дворец',
+  };
+
+  titleElement.textContent = card.offer.title;
+  addressElement.textContent = card.offer.carddress;
+  priceElement.textContent = card.offer.price + '₽/ночь';
+  typeElement.textContent = offerTypes[card.offer.type];
+  capacityElement.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
+  timeElement.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  descriptionElement.textContent = card.offer.description;
+  avatarElement.src = card.author.avatar;
+
+
+  photosElement.innerHTML = '';
+
+  for (let i = 0; i < card.offer.photos.length; i++) {
+    let newPhoto = photoCloneElement.cloneNode(true);
+    newPhoto.setAttribute('src', card.offer.photos[i]);
+    photosElement.appendChild(newPhoto);
+  }
+
+
+  featuresElement.innerHTML = '';
+
+  for (let i = 0; i < card.offer.features.length; i++) {
+    let newFeature = document.createElement('li');
+    newFeature.classList.add('popup__feature', 'popup__feature--${card.offer.features[i]}');
+    featuresElement.appendChild(newFeature);
+  }
+
+
+  return cardElement;
+};
+
+
+const renderCards = function (card) {
+  const fragmentCard = document.createDocumentFragment();
+  fragmentCard.appendChild(renderCard(card));
+
+  return fragmentCard;
+};
+
+mapElement.insertBefore(renderCards, beforeBlock);
