@@ -19,6 +19,12 @@ const MAX_ROOMS = 5;
 const MIN_GUESTS = 1;
 const MAX_GUESTS = 10;
 const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
+const offerTypes = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+};
 
 const mapElement = document.querySelector('.map');
 const mapPinsElement = mapElement.querySelector('.map__pins');
@@ -38,12 +44,8 @@ function getRandomNumberRange(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function getRandomNumberOfArray(array) {
-  return Math.floor(Math.random() * array.length);
-}
-
-function getRandomOfArray(arr) {
-  const newArr = arr.slice(getRandomNumberOfArray(arr));
+function getRandomOfArray(array) {
+  const newArr = array.slice(getRandomNumber(array.length));
   return newArr;
 }
 
@@ -71,7 +73,7 @@ const createPins = function (offersQuantity) {
         checkout: TIME_CHECK_IN_OUT[getRandomNumber(TIME_CHECK_IN_OUT.length)],
         features: getRandomOfArray(FEATURES),
         description: 'Здесь будет ваше описание...',
-        photos: PHOTOS[getRandomNumber(PHOTOS.length)],
+        photos: getRandomOfArray(PHOTOS),
       },
       location: {
         x: location.x,
@@ -123,19 +125,13 @@ const renderCard = function (card) {
   const avatarElement = cardElement.querySelector('.popup__avatar');
   const photosElement = cardElement.querySelector('.popup__photos');
   const photoCloneElement = cardElement.querySelector('.popup__photo');
-  const offerTypes = {
-    flat: 'Квартира',
-    bungalow: 'Бунгало',
-    house: 'Дом',
-    palace: 'Дворец',
-  };
 
   titleElement.textContent = card.offer.title;
-  addressElement.textContent = card.offer.carddress;
-  priceElement.textContent = card.offer.price + '₽/ночь';
+  addressElement.textContent = card.offer.address;
+  priceElement.textContent = `${card.offer.price} ₽/ночь`;
   typeElement.textContent = offerTypes[card.offer.type];
-  capacityElement.textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
-  timeElement.textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
+  capacityElement.textContent = `${card.offer.rooms} комнаты для ${card.offer.guests} гостей`;
+  timeElement.textContent = `Заезд после ${card.offer.checkin} выезд до ${card.offer.checkout}`;
   descriptionElement.textContent = card.offer.description;
   avatarElement.src = card.author.avatar;
 
@@ -153,7 +149,7 @@ const renderCard = function (card) {
 
   for (let i = 0; i < card.offer.features.length; i++) {
     let newFeature = document.createElement('li');
-    newFeature.classList.add('popup__feature', 'popup__feature--${card.offer.features[i]}');
+    newFeature.classList.add('popup__feature', `popup__feature--${card.offer.features[i]}`);
     featuresElement.appendChild(newFeature);
   }
 
@@ -169,4 +165,4 @@ const renderCards = function (card) {
   return fragmentCard;
 };
 
-mapElement.insertBefore(renderCards, beforeBlock);
+mapElement.insertBefore(renderCards(pins[0]), beforeBlock);
