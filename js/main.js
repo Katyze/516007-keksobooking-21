@@ -19,12 +19,12 @@ const MAX_ROOMS = 5;
 const MIN_GUESTS = 1;
 const MAX_GUESTS = 10;
 const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
-// const offerTypes = {
-//   flat: 'Квартира',
-//   bungalow: 'Бунгало',
-//   house: 'Дом',
-//   palace: 'Дворец',
-// };
+const offerTypes = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+};
 
 const mapElement = document.querySelector('.map');
 const mapPinsElement = mapElement.querySelector('.map__pins');
@@ -104,8 +104,8 @@ pins.forEach((item) => {
 
 
 // module3-task2
-// const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
-// const beforeBlock = document.querySelector('.map__filters-container');
+const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
+const beforeBlock = document.querySelector('.map__filters-container');
 
 // создаем карточку
 // const createCard = function (card) {
@@ -165,93 +165,92 @@ pins.forEach((item) => {
 
 // доверяй, но проверяй (часть 1)
 
+const MAIN_PIN_TAIL = 22;
+
 const mainPin = mapPinsElement.querySelector('.map__pin--main');
 const filterForm = document.querySelector('.map__filters');
 const adForm = document.querySelector('.ad-form');
 
-const MAIN_PIN_WIDTH = mainPin.offsetWidth;
-const MAIN_PIN_HEIGHT = mainPin.offsetHeight;
-const MAIN_PIN_TAIL = 22;
-const MAIN_PIN_HEIGHT_ACTIVE = MAIN_PIN_HEIGHT + MAIN_PIN_TAIL;
+const mainPinWidth = mainPin.offsetWidth;
+const mainPinHeight = mainPin.offsetHeight;
+const maiPinHeightActive = mainPinHeight + MAIN_PIN_TAIL;
 
-const MAIN_PIN_ACTIVE_X = mainPin.offsetLeft + MAIN_PIN_WIDTH / 2;
-const MAIN_PIN_ACTIVE_Y = mainPin.offsetTop + MAIN_PIN_HEIGHT_ACTIVE;
+const mainPinActiveX = mainPin.offsetLeft + mainPinWidth / 2;
+const mainPinActiveY = mainPin.offsetTop + maiPinHeightActive;
 
-const MAIN_PIN_INACTIVE_X = mainPin.offsetLeft + MAIN_PIN_WIDTH / 2;
-const MAIN_PIN_INACTIVE_Y = mainPin.offsetTop + MAIN_PIN_HEIGHT / 2;
+const mainPinInActiveX = mainPin.offsetLeft + mainPinWidth / 2;
+const mainPinInActiveY = mainPin.offsetTop + mainPinHeight / 2;
 
 
 const selects = filterForm.querySelectorAll('select');
 const fieldsets = adForm.querySelectorAll('fieldset');
 
-const disabledForm = function () {
-  for (let i = 0, j = 0; i < fieldsets.length && j < selects.length; i++, j++) {
-    fieldsets[i].setAttribute('disabled', '');
-    selects[j].setAttribute('disabled', '');
+const disabledForm = function (select, fieldset) {
+  for (let i = 0; i < select.length; i++) {
+    select[i].setAttribute('disabled', '');
   }
-};
-
-const unDisabledForm = function () {
-  for (let i = 0, j = 0; i < fieldsets.length && j < selects.length; i++, j++) {
-    fieldsets[i].removeAttribute('disabled');
-    selects[j].removeAttribute('disabled');
+  for (let j = 0; j < fieldset.length; j++) {
+    fieldset[j].setAttribute('disabled', '');
   }
-};
+}
 
-disabledForm();
+disabledForm(selects, fieldsets);
+
+const activatedForm = function (select, fieldset) {
+  for (let i = 0; i < select.length; i++) {
+    select[i].removeAttribute('disabled');
+  }
+  for (let j = 0; j < fieldset.length; j++) {
+    fieldset[j].removeAttribute('disabled');
+  }
+}
 
 const pageIsActive = function () {
   mapElement.classList.remove('map--faded');
   mapPinsElement.appendChild(fragment);
   adForm.classList.remove('ad-form--disabled');
+  addressField.value = `${Math.round(mainPinActiveX)}, ${Math.round(mainPinActiveY)}`;
+  activatedForm(selects, fieldsets);
 };
 
 mainPin.addEventListener('mousedown', function (evt) {
   if (evt.button === 0) {
     pageIsActive();
-    addressField.value = `${Math.round(MAIN_PIN_ACTIVE_X)} ${Math.round(MAIN_PIN_ACTIVE_Y)}`;
-    unDisabledForm();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
     pageIsActive();
-    addressField.value = `${Math.round(MAIN_PIN_ACTIVE_X)} ${Math.round(MAIN_PIN_ACTIVE_Y)}`;
-    unDisabledForm();
   }
 });
 
-const addressField = adForm.querySelector('#address');
-addressField.value = `${Math.round(MAIN_PIN_INACTIVE_X)} ${Math.round(MAIN_PIN_INACTIVE_Y)}`;
+const addressField = adForm.querySelector('#address')
+addressField.value = `${Math.round(mainPinInActiveX)}, ${Math.round(mainPinInActiveY)}`;
 
 
-const roomsValue = document.querySelector('#room_number');
-const guestsValue = document.querySelector('#capacity');
+const roomsSelect = document.querySelector('#room_number');
+const guestsSelect = document.querySelector('#capacity');
 
 const roomGuestValidity = function () {
-  if (roomsValue.value === '1' && guestsValue.value !== '1') {
-    guestsValue.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '2' && (guestsValue.value === '3' || guestsValue.value === '0')) {
-    guestsValue.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '3' && guestsValue.value === '0') {
-    guestsValue.setCustomValidity('Увеличьте количество гостей');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '100' && guestsValue.value === '0') {
-    guestsValue.setCustomValidity('Увеличьте количество гостей');
-    guestsValue.reportValidity();
+  if (roomsSelect.value < guestsSelect.value) {
+    guestsSelect.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
+    guestsSelect.reportValidity();
+  } else if (roomsSelect.value === '100' && guestsSelect.value === '0') {
+    guestsSelect.setCustomValidity('100 комнат не для гостей');
+    guestsSelect.reportValidity();
   } else {
-    guestsValue.setCustomValidity('');
-    guestsValue.reportValidity();
+    guestsSelect.setCustomValidity('');
+    guestsSelect.reportValidity();
   }
 };
 
-guestsValue.addEventListener('change', function () {
+roomGuestValidity();
+
+guestsSelect.addEventListener('change', function () {
   roomGuestValidity();
 });
 
-roomsValue.addEventListener('change', function () {
+roomsSelect.addEventListener('change', function () {
   roomGuestValidity();
 });
