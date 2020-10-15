@@ -77,6 +77,9 @@ const createPins = function (offersQuantity) {
         x: location.x,
         y: location.y,
       },
+      index: {
+        id: i + 1,
+      },
     };
     pins.push(createElement);
   }
@@ -86,7 +89,7 @@ const createPins = function (offersQuantity) {
 const pinsArray = createPins(OFFERS_QUANTITY);
 
 // создаем пин
-const renderPin = function (offer, index) {
+const renderPin = function (offer) {
   const pinElement = pinTemplateElement.cloneNode(true);
   const img = pinElement.querySelector('img');
 
@@ -94,7 +97,7 @@ const renderPin = function (offer, index) {
   pinElement.style.top = offer.location.y + PIN_HEIGHT + 'px';
   img.src = offer.author.avatar;
   img.alt = offer.offer.title;
-  pinElement.dataset.id = index;
+  pinElement.dataset.id = offer.index.id;
 
   return pinElement;
 };
@@ -103,7 +106,7 @@ const renderPin = function (offer, index) {
 const addPins = function () {
   const fragment = document.createDocumentFragment();
   for (let i = 0; i < pinsArray.length; i++) {
-    fragment.appendChild(renderPin(pinsArray[i], i + 1));
+    fragment.appendChild(renderPin(pinsArray[i]));
   }
   mapPinsElement.appendChild(fragment);
 };
@@ -175,11 +178,13 @@ mapPinsElement.addEventListener('click', function (evt) {
   const targetParent = target.closest('[type="button"]');
   const activeCard = mapPinsElement.querySelector('.map__card');
 
+  const idFinder = pinsArray.find(pin => pin.index.id === targetParent.dataset.id);
+
   if (target && targetParent) {
     if (activeCard) {
       mapPinsElement.removeChild(activeCard);
     } else {
-      addCards(targetParent.dataset.id);
+      addCards(idFinder);
     }
   }
 });
