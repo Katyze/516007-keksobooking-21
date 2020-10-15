@@ -19,12 +19,12 @@ const MAX_ROOMS = 5;
 const MIN_GUESTS = 1;
 const MAX_GUESTS = 10;
 const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
-// const offerTypes = {
-//   flat: 'Квартира',
-//   bungalow: 'Бунгало',
-//   house: 'Дом',
-//   palace: 'Дворец',
-// };
+const offerTypes = {
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+};
 
 const mapElement = document.querySelector('.map');
 const mapPinsElement = mapElement.querySelector('.map__pins');
@@ -77,11 +77,16 @@ const createPins = function (offersQuantity) {
         x: location.x,
         y: location.y,
       },
+      index: {
+        id: i + 1,
+      },
     };
     pins.push(createElement);
   }
   return pins;
 };
+
+const pinsArray = createPins(OFFERS_QUANTITY);
 
 // создаем пин
 const renderPin = function (offer) {
@@ -92,166 +97,186 @@ const renderPin = function (offer) {
   pinElement.style.top = offer.location.y + PIN_HEIGHT + 'px';
   img.src = offer.author.avatar;
   img.alt = offer.offer.title;
+  pinElement.dataset.id = offer.index.id;
 
   return pinElement;
 };
 
-const fragment = document.createDocumentFragment();
-const pins = createPins(OFFERS_QUANTITY);
-pins.forEach((item) => {
-  fragment.appendChild(renderPin(item));
-});
 
+const addPins = function () {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < pinsArray.length; i++) {
+    fragment.appendChild(renderPin(pinsArray[i]));
+  }
+  mapPinsElement.appendChild(fragment);
+};
 
 // module3-task2
-// const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
-// const beforeBlock = document.querySelector('.map__filters-container');
+
+const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
+const beforeBlock = document.querySelector('.map__filters-container');
 
 // создаем карточку
-// const createCard = function (card) {
-//   const cardElement = cardTemplateElement.cloneNode(true);
-//   const titleElement = cardElement.querySelector('.popup__title');
-//   const addressElement = cardElement.querySelector('.popup__text--address');
-//   const priceElement = cardElement.querySelector('.popup__text--price');
-//   const typeElement = cardElement.querySelector('.popup__type');
-//   const capacityElement = cardElement.querySelector('.popup__text--capacity');
-//   const timeElement = cardElement.querySelector('.popup__text--time');
-//   const featuresElement = cardElement.querySelector('.popup__features');
-//   const descriptionElement = cardElement.querySelector('.popup__description');
-//   const avatarElement = cardElement.querySelector('.popup__avatar');
-//   const photosElement = cardElement.querySelector('.popup__photos');
-//   const photoCloneElement = cardElement.querySelector('.popup__photo');
+const createCard = function (card) {
+  const cardElement = cardTemplateElement.cloneNode(true);
+  const titleElement = cardElement.querySelector('.popup__title');
+  const addressElement = cardElement.querySelector('.popup__text--address');
+  const priceElement = cardElement.querySelector('.popup__text--price');
+  const typeElement = cardElement.querySelector('.popup__type');
+  const capacityElement = cardElement.querySelector('.popup__text--capacity');
+  const timeElement = cardElement.querySelector('.popup__text--time');
+  const featuresElement = cardElement.querySelector('.popup__features');
+  const descriptionElement = cardElement.querySelector('.popup__description');
+  const avatarElement = cardElement.querySelector('.popup__avatar');
+  const photosElement = cardElement.querySelector('.popup__photos');
+  const photoCloneElement = cardElement.querySelector('.popup__photo');
 
-//   titleElement.textContent = card.offer.title;
-//   addressElement.textContent = card.offer.address;
-//   priceElement.textContent = `${card.offer.price} ₽/ночь`;
-//   typeElement.textContent = offerTypes[card.offer.type];
-//   capacityElement.textContent = `${card.offer.rooms} комнаты для ${card.offer.guests} гостей`;
-//   timeElement.textContent = `Заезд после ${card.offer.checkin} выезд до ${card.offer.checkout}`;
-//   descriptionElement.textContent = card.offer.description;
-//   avatarElement.src = card.author.avatar;
-
-
-//   photosElement.innerHTML = '';
-
-//   for (let i = 0; i < card.offer.photos.length; i++) {
-//     let newPhoto = photoCloneElement.cloneNode(true);
-//     newPhoto.setAttribute('src', card.offer.photos[i]);
-//     photosElement.appendChild(newPhoto);
-//   }
+  titleElement.textContent = card.offer.title;
+  addressElement.textContent = card.offer.address;
+  priceElement.textContent = `${card.offer.price} ₽/ночь`;
+  typeElement.textContent = offerTypes[card.offer.type];
+  capacityElement.textContent = `${card.offer.rooms} комнаты для ${card.offer.guests} гостей`;
+  timeElement.textContent = `Заезд после ${card.offer.checkin} выезд до ${card.offer.checkout}`;
+  descriptionElement.textContent = card.offer.description;
+  avatarElement.src = card.author.avatar;
 
 
-//   featuresElement.innerHTML = '';
+  photosElement.innerHTML = '';
 
-//   for (let i = 0; i < card.offer.features.length; i++) {
-//     let newFeature = document.createElement('li');
-//     newFeature.classList.add('popup__feature', `popup__feature--${card.offer.features[i]}`);
-//     featuresElement.appendChild(newFeature);
-//   }
-
-
-//   return cardElement;
-// };
+  for (let i = 0; i < card.offer.photos.length; i++) {
+    let newPhoto = photoCloneElement.cloneNode(true);
+    newPhoto.setAttribute('src', card.offer.photos[i]);
+    photosElement.appendChild(newPhoto);
+  }
 
 
-// const renderCards = function (card) {
-//   const fragmentCard = document.createDocumentFragment();
-//   fragmentCard.appendChild(createCard(card));
+  featuresElement.innerHTML = '';
 
-//   return fragmentCard;
-// };
+  for (let i = 0; i < card.offer.features.length; i++) {
+    let newFeature = document.createElement('li');
+    newFeature.classList.add('popup__feature', `popup__feature--${card.offer.features[i]}`);
+    featuresElement.appendChild(newFeature);
+  }
 
-// mapElement.insertBefore(renderCards(pins[0]), beforeBlock);
+
+  return cardElement;
+};
+
+
+const addCards = function (cardNumber) {
+  const fragmentCard = document.createDocumentFragment();
+  const renderCards = createCard(pinsArray[cardNumber]);
+
+  fragmentCard.appendChild(renderCards);
+  mapElement.insertBefore(fragmentCard, beforeBlock);
+
+  return renderCards;
+};
+
+mapPinsElement.addEventListener('click', function (evt) {
+  const target = evt.target;
+  const targetParent = target.closest('[type="button"]');
+  const activeCard = mapPinsElement.querySelector('.map__card');
+
+  const idFinder = pinsArray.find(pin => pin.index.id === targetParent.dataset.id);
+
+  if (target && targetParent) {
+    if (activeCard) {
+      mapPinsElement.removeChild(activeCard);
+    } else {
+      addCards(idFinder);
+    }
+  }
+});
 
 // доверяй, но проверяй (часть 1)
+
+const MAIN_PIN_TAIL = 22;
 
 const mainPin = mapPinsElement.querySelector('.map__pin--main');
 const filterForm = document.querySelector('.map__filters');
 const adForm = document.querySelector('.ad-form');
 
-const MAIN_PIN_WIDTH = mainPin.offsetWidth;
-const MAIN_PIN_HEIGHT = mainPin.offsetHeight;
-const MAIN_PIN_TAIL = 22;
-const MAIN_PIN_HEIGHT_ACTIVE = MAIN_PIN_HEIGHT + MAIN_PIN_TAIL;
+const mainPinWidth = mainPin.offsetWidth;
+const mainPinHeight = mainPin.offsetHeight;
+const maiPinHeightActive = mainPinHeight + MAIN_PIN_TAIL;
 
-const MAIN_PIN_ACTIVE_X = mainPin.offsetLeft + MAIN_PIN_WIDTH / 2;
-const MAIN_PIN_ACTIVE_Y = mainPin.offsetTop + MAIN_PIN_HEIGHT_ACTIVE;
+const mainPinActiveX = mainPin.offsetLeft + mainPinWidth / 2;
+const mainPinActiveY = mainPin.offsetTop + maiPinHeightActive;
 
-const MAIN_PIN_INACTIVE_X = mainPin.offsetLeft + MAIN_PIN_WIDTH / 2;
-const MAIN_PIN_INACTIVE_Y = mainPin.offsetTop + MAIN_PIN_HEIGHT / 2;
+const mainPinInActiveX = mainPin.offsetLeft + mainPinWidth / 2;
+const mainPinInActiveY = mainPin.offsetTop + mainPinHeight / 2;
 
 
 const selects = filterForm.querySelectorAll('select');
 const fieldsets = adForm.querySelectorAll('fieldset');
 
-const disabledForm = function () {
-  for (let i = 0, j = 0; i < fieldsets.length && j < selects.length; i++, j++) {
-    fieldsets[i].setAttribute('disabled', '');
-    selects[j].setAttribute('disabled', '');
+const disabledForm = function (select, fieldset) {
+  for (let i = 0; i < select.length; i++) {
+    select[i].setAttribute('disabled', '');
+  }
+  for (let j = 0; j < fieldset.length; j++) {
+    fieldset[j].setAttribute('disabled', '');
   }
 };
 
-const unDisabledForm = function () {
-  for (let i = 0, j = 0; i < fieldsets.length && j < selects.length; i++, j++) {
-    fieldsets[i].removeAttribute('disabled');
-    selects[j].removeAttribute('disabled');
+disabledForm(selects, fieldsets);
+
+const activatedForm = function (select, fieldset) {
+  for (let i = 0; i < select.length; i++) {
+    select[i].removeAttribute('disabled');
+  }
+  for (let j = 0; j < fieldset.length; j++) {
+    fieldset[j].removeAttribute('disabled');
   }
 };
-
-disabledForm();
 
 const pageIsActive = function () {
   mapElement.classList.remove('map--faded');
-  mapPinsElement.appendChild(fragment);
+  addPins();
   adForm.classList.remove('ad-form--disabled');
+  addressField.value = `${Math.round(mainPinActiveX)}, ${Math.round(mainPinActiveY)}`;
+  activatedForm(selects, fieldsets);
 };
 
 mainPin.addEventListener('mousedown', function (evt) {
   if (evt.button === 0) {
     pageIsActive();
-    addressField.value = `${Math.round(MAIN_PIN_ACTIVE_X)} ${Math.round(MAIN_PIN_ACTIVE_Y)}`;
-    unDisabledForm();
   }
 });
 
 mainPin.addEventListener('keydown', function (evt) {
   if (evt.key === 'Enter') {
     pageIsActive();
-    addressField.value = `${Math.round(MAIN_PIN_ACTIVE_X)} ${Math.round(MAIN_PIN_ACTIVE_Y)}`;
-    unDisabledForm();
   }
 });
 
 const addressField = adForm.querySelector('#address');
-addressField.value = `${Math.round(MAIN_PIN_INACTIVE_X)} ${Math.round(MAIN_PIN_INACTIVE_Y)}`;
+addressField.value = `${Math.round(mainPinInActiveX)}, ${Math.round(mainPinInActiveY)}`;
 
 
-const roomsValue = document.querySelector('#room_number');
-const guestsValue = document.querySelector('#capacity');
+const roomsSelect = document.querySelector('#room_number');
+const guestsSelect = document.querySelector('#capacity');
 
 const roomGuestValidity = function () {
-  if (roomsValue.value === '1' && guestsValue.value !== '1') {
-    guestsValue.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '2' && (guestsValue.value === '3' || guestsValue.value === '0')) {
-    guestsValue.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '3' && guestsValue.value === '0') {
-    guestsValue.setCustomValidity('Увеличьте количество гостей');
-    guestsValue.reportValidity();
-  } else if (roomsValue.value === '100' && guestsValue.value === '0') {
-    guestsValue.setCustomValidity('Увеличьте количество гостей');
-    guestsValue.reportValidity();
+  if (roomsSelect.value < guestsSelect.value) {
+    guestsSelect.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
+    guestsSelect.reportValidity();
+  } else if (roomsSelect.value === '100' && guestsSelect.value === '0') {
+    guestsSelect.setCustomValidity('100 комнат не для гостей');
+    guestsSelect.reportValidity();
   } else {
-    guestsValue.setCustomValidity('');
-    guestsValue.reportValidity();
+    guestsSelect.setCustomValidity('');
+    guestsSelect.reportValidity();
   }
 };
 
-guestsValue.addEventListener('change', function () {
+roomGuestValidity();
+
+guestsSelect.addEventListener('change', function () {
   roomGuestValidity();
 });
 
-roomsValue.addEventListener('change', function () {
+roomsSelect.addEventListener('change', function () {
   roomGuestValidity();
 });
