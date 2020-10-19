@@ -169,7 +169,7 @@ const createCard = function (card) {
 
 const addCard = function (offerId) {
   const fragmentCard = document.createDocumentFragment();
-  const targetOffer = offers.find(offer => {
+  const targetOffer = offers.find((offer) => {
     return offer.id === offerId;
   });
   const card = createCard(targetOffer);
@@ -182,22 +182,29 @@ mapPinsElement.addEventListener('click', function (evt) {
   const target = evt.target;
   const targetParent = target.closest('.map__pin:not(.map__pin--main)');
 
-  if (targetParent && targetParent) {
+  if (targetParent && target) {
     const pinId = Number(targetParent.dataset.id);
+    const activeCard = mapElement.querySelector('.map__card');
+
+    if (activeCard) {
+      activeCard.remove();
+    }
+
     addCard(pinId);
 
-    const activeCard = mapElement.querySelector('.map__card');
     const closePopup = document.querySelector('.popup__close');
 
-    closePopup.addEventListener('mousedown', function (evt) {
-      if (evt.button === 0) {
-        mapElement.removeChild(activeCard);
+    closePopup.addEventListener('mousedown', function (closeEvent) {
+      const parentCard = mapElement.querySelector('.map__card');
+      if (closeEvent.button === 0) {
+        parentCard.remove();
       }
     });
 
-    closePopup.addEventListener('keydown', function (evt) {
-      if (evt.key === 'Enter') {
-        mapElement.removeChild(activeCard);
+    closePopup.addEventListener('keydown', function (closeEvent) {
+      const parentCard = mapElement.querySelector('.map__card');
+      if (closeEvent.key === 'Enter') {
+        parentCard.remove();
       }
     });
   }
@@ -293,26 +300,24 @@ const priceForNight = document.querySelector('#price');
 
 const validateHouseAndNight = function () {
   if (typeOfHouse.value === 'bungalow') {
+    priceForNight.setAttribute('min', MIN_PRICE_FOR_BUNGALOW);
     priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_BUNGALOW);
-    typeOfHouse.setCustomValidity('Минимальная стоимость аренды бунгало 0 рублей');
-    typeOfHouse.reportValidity();
   } else if (typeOfHouse.value === 'flat' && priceForNight.value < MIN_PRICE_FOR_FLAT) {
+    priceForNight.setAttribute('min', MIN_PRICE_FOR_FLAT);
     priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_FLAT);
-    typeOfHouse.setCustomValidity('Минимальная стоимость аренды квартиры 1000 рублей');
-    typeOfHouse.reportValidity();
   } else if (typeOfHouse.value === 'house' && priceForNight.value < MIN_PRICE_FOR_HOUSE) {
+    priceForNight.setAttribute('min', MIN_PRICE_FOR_HOUSE);
     priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_HOUSE);
-    typeOfHouse.setCustomValidity('Минимальная стоимость аренды дома 5000 рублей');
-    typeOfHouse.reportValidity();
   } else if (typeOfHouse.value === 'palace' && priceForNight.value < MIN_PRICE_FOR_PALACE) {
+    priceForNight.setAttribute('min', MIN_PRICE_FOR_PALACE);
     priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_PALACE);
-    typeOfHouse.setCustomValidity('Минимальная стоимость аренды дворца 10000 рублей');
-    typeOfHouse.reportValidity();
   } else {
     typeOfHouse.setCustomValidity('');
-    typeOfHouse.reportValidity();
+    priceForNight.reportValidity();
   }
 };
+
+validateHouseAndNight();
 
 const timeIn = document.querySelector('#timein');
 const timeOut = document.querySelector('#timeout');
