@@ -169,7 +169,9 @@ const createCard = function (card) {
 
 const addCard = function (offerId) {
   const fragmentCard = document.createDocumentFragment();
-  const targetOffer = offers.find(offer => {return offer.id === offerId;});
+  const targetOffer = offers.find(offer => {
+    return offer.id === offerId;
+  });
   const card = createCard(targetOffer);
 
   fragmentCard.appendChild(card);
@@ -179,28 +181,26 @@ const addCard = function (offerId) {
 mapPinsElement.addEventListener('click', function (evt) {
   const target = evt.target;
   const targetParent = target.closest('.map__pin:not(.map__pin--main)');
-  const activeCard = mapPinsElement.querySelector('.map__card');
-  const closePopup = document.querySelector('.popup__close');
 
   if (targetParent && targetParent) {
     const pinId = Number(targetParent.dataset.id);
-    if (activeCard) {
-      mapPinsElement.removeChild(activeCard);
-    }
     addCard(pinId);
+
+    const activeCard = mapElement.querySelector('.map__card');
+    const closePopup = document.querySelector('.popup__close');
+
+    closePopup.addEventListener('mousedown', function (evt) {
+      if (evt.button === 0) {
+        mapElement.removeChild(activeCard);
+      }
+    });
+
+    closePopup.addEventListener('keydown', function (evt) {
+      if (evt.key === 'Enter') {
+        mapElement.removeChild(activeCard);
+      }
+    });
   }
-
-  closePopup.addEventListener('mousedown', function (evt) {
-    if (evt.button === 0) {
-      mapElement.removeChild(activeCard);
-    }
-  });
-
-  closePopup.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Enter') {
-      mapElement.removeChild(activeCard);
-    }
-  });
 });
 
 // доверяй, но проверяй (часть 1)
