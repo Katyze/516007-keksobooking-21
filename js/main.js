@@ -20,18 +20,29 @@ const MIN_GUESTS = 1;
 const MAX_GUESTS = 10;
 const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
 const MAIN_PIN_TAIL = 22;
-const MIN_PRICE_FOR_BUNGALOW = 0;
-const MIN_PRICE_FOR_FLAT = 1000;
-const MIN_PRICE_FOR_HOUSE = 5000;
-const MIN_PRICE_FOR_PALACE = 10000;
+const MAX_ROOMS_COUNT = 100;
+const NOT_FOR_GUESTS = 0;
 
 
 const offerTypes = {
-  flat: 'Квартира',
-  bungalow: 'Бунгало',
-  house: 'Дом',
-  palace: 'Дворец',
+  flat: {
+    label: 'Квартира',
+    minPrice: 1000,
+  },
+  bungalow: {
+    label: 'Бунгало',
+    minPrice: 0,
+  },
+  house: {
+    label: 'Дом',
+    minPrice: 5000,
+  },
+  palace: {
+    label: 'Дворец',
+    minPrice: 10000,
+  },
 };
+
 const mapElement = document.querySelector('.map');
 const mapPinsElement = mapElement.querySelector('.map__pins');
 const pinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -139,7 +150,7 @@ const createCard = function (card) {
   titleElement.textContent = card.offer.title;
   addressElement.textContent = card.offer.address;
   priceElement.textContent = `${card.offer.price} ₽/ночь`;
-  typeElement.textContent = offerTypes[card.offer.type];
+  typeElement.textContent = offerTypes[card.offer.type].label;
   capacityElement.textContent = `${card.offer.rooms} комнаты для ${card.offer.guests} гостей`;
   timeElement.textContent = `Заезд после ${card.offer.checkin} выезд до ${card.offer.checkout}`;
   descriptionElement.textContent = card.offer.description;
@@ -250,12 +261,12 @@ const activatePage = function () {
   renderPins(offers);
   adForm.classList.remove('ad-form--disabled');
   addressField.value = `${Math.round(mainPinActiveX)}, ${Math.round(mainPinActiveY)}`;
+  addressField.readOnly = true;
   enableFormElements(selects);
   enableFormElements(fieldsets);
   guestsSelect.addEventListener('change', validateRoomsAngGuests);
   roomsSelect.addEventListener('change', validateRoomsAngGuests);
   typeOfHouse.addEventListener('change', validateHouseAndNight);
-  priceForNight.addEventListener('change', validateHouseAndNight);
   timeIn.addEventListener('change', validateTimeIn);
   timeOut.addEventListener('change', validateTimeOut);
 };
@@ -280,16 +291,18 @@ const roomsSelect = document.querySelector('#room_number');
 const guestsSelect = document.querySelector('#capacity');
 
 const validateRoomsAngGuests = function () {
-  if (roomsSelect.value < guestsSelect.value) {
-    guestsSelect.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
-    guestsSelect.reportValidity();
-  } else if (roomsSelect.value === '100' && guestsSelect.value === '0') {
+  const roomsValue = Number(roomsSelect.value);
+  const guestsValue = Number(guestsSelect.value);
+  if (roomsValue < MAX_ROOMS_COUNT && guestsValue === NOT_FOR_GUESTS) {
+    guestsSelect.setCustomValidity('Заселите кого-нибудь');
+  } else if (roomsValue === MAX_ROOMS_COUNT && guestsValue > NOT_FOR_GUESTS) {
     guestsSelect.setCustomValidity('100 комнат не для гостей');
-    guestsSelect.reportValidity();
+  } else if (roomsValue < guestsValue) {
+    guestsSelect.setCustomValidity('Уменьшите количество гостей, или увеличьте количество комнат');
   } else {
     guestsSelect.setCustomValidity('');
-    guestsSelect.reportValidity();
   }
+  guestsSelect.reportValidity();
 };
 
 validateRoomsAngGuests();
@@ -299,22 +312,10 @@ const typeOfHouse = document.querySelector('#type');
 const priceForNight = document.querySelector('#price');
 
 const validateHouseAndNight = function () {
-  if (typeOfHouse.value === 'bungalow') {
-    priceForNight.setAttribute('min', MIN_PRICE_FOR_BUNGALOW);
-    priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_BUNGALOW);
-  } else if (typeOfHouse.value === 'flat' && priceForNight.value < MIN_PRICE_FOR_FLAT) {
-    priceForNight.setAttribute('min', MIN_PRICE_FOR_FLAT);
-    priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_FLAT);
-  } else if (typeOfHouse.value === 'house' && priceForNight.value < MIN_PRICE_FOR_HOUSE) {
-    priceForNight.setAttribute('min', MIN_PRICE_FOR_HOUSE);
-    priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_HOUSE);
-  } else if (typeOfHouse.value === 'palace' && priceForNight.value < MIN_PRICE_FOR_PALACE) {
-    priceForNight.setAttribute('min', MIN_PRICE_FOR_PALACE);
-    priceForNight.setAttribute('placeholder', MIN_PRICE_FOR_PALACE);
-  } else {
-    typeOfHouse.setCustomValidity('');
-    priceForNight.reportValidity();
-  }
+  const priceForSelectedValue = offerTypes[typeOfHouse.value].minPrice;
+
+  priceForNight.setAttribute('min', priceForSelectedValue);
+  priceForNight.setAttribute('placeholder', priceForSelectedValue);
 };
 
 validateHouseAndNight();
