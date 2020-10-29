@@ -32,9 +32,67 @@
     window.form.timeOut.addEventListener('change', window.form.validateTimeOut);
   };
 
+
+
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.button === 0) {
       activatePage();
+
+      let startCoords = {
+        x: evt.clientX,
+        y: evt.clientY
+      };
+
+      const onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        let shift = {
+          x: startCoords.x - moveEvt.clientX,
+          y: startCoords.y - moveEvt.clientY
+        };
+
+        startCoords = {
+          x: moveEvt.clientX,
+          y: moveEvt.clientY
+        };
+
+        let newCoordY = mainPin.offsetTop - shift.y;
+        let newCoordX = mainPin.offsetLeft - shift.x;
+
+        if (newCoordX < 20) {
+          newCoordX = 20;
+        }
+
+        if (newCoordX > 1120) {
+          newCoordX = 1120;
+        }
+
+        if (newCoordY < 160) {
+          newCoordY = 160;
+        }
+
+        if (newCoordY > 620) {
+          newCoordY = 620;
+        }
+
+        mainPin.style.top = newCoordY + 'px';
+        mainPin.style.left = newCoordX + 'px';
+
+        const mainPinX = mainPin.offsetLeft + mainPinWidth / 2;
+        const mainPinY = mainPin.offsetTop + maiPinHeightActive;
+
+        addressField.value = `${Math.round(mainPinX)}, ${Math.round(mainPinY)}`;
+      };
+
+      const onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
     }
   });
 
