@@ -1,17 +1,7 @@
 'use strict';
 
 (function () {
-  const addCard = function (offerId) {
-    const filtersContainer = document.querySelector('.map__filters-container');
-    const fragmentCard = document.createDocumentFragment();
-    const targetOffer = window.offer.offers.find((offer) => {
-      return offer.id === offerId;
-    });
-    const card = window.card.createCard(targetOffer);
-
-    fragmentCard.appendChild(card);
-    window.pin.mapElement.insertBefore(fragmentCard, filtersContainer);
-  };
+  const filtersContainer = document.querySelector('.map__filters-container');
 
   window.pin.mapPinsElement.addEventListener('click', function (evt) {
     const target = evt.target;
@@ -25,7 +15,7 @@
         activeCard.remove();
       }
 
-      addCard(pinId);
+      window.addCard(pinId, window.pin.mapElement, filtersContainer);
 
       const closePopup = document.querySelector('.popup__close');
 

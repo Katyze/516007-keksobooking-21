@@ -6,6 +6,7 @@
 
   const filterForm = document.querySelector('.map__filters');
   const adForm = document.querySelector('.ad-form');
+  const addressField = document.querySelector('#address');
   const selects = filterForm.querySelectorAll('select');
   const fieldsets = adForm.querySelectorAll('fieldset');
   const roomsSelect = document.querySelector('#room_number');
@@ -15,20 +16,9 @@
   const timeIn = document.querySelector('#timein');
   const timeOut = document.querySelector('#timeout');
 
-  const disableFormElements = function (formElements) {
-    for (let i = 0; i < formElements.length; i++) {
-      formElements[i].setAttribute('disabled', '');
-    }
-  };
 
-  const enableFormElements = function (formElements) {
-    for (let i = 0; i < formElements.length; i++) {
-      formElements[i].removeAttribute('disabled');
-    }
-  };
-
-  disableFormElements(selects);
-  disableFormElements(fieldsets);
+  window.util.disable(selects);
+  window.util.disable(fieldsets);
 
   const validateRoomsAngGuests = function () {
     const roomsValue = Number(roomsSelect.value);
@@ -48,7 +38,7 @@
   validateRoomsAngGuests();
 
   const setPriceAttributes = function () {
-    const priceForSelectedValue = window.card.offerTypes[typeOfHouse.value].minPrice;
+    const priceForSelectedValue = window.data.apartments[typeOfHouse.value].minPrice;
 
     priceForNight.setAttribute('min', priceForSelectedValue);
     priceForNight.setAttribute('placeholder', priceForSelectedValue);
@@ -62,19 +52,29 @@
     timeIn.value = timeOut.value;
   };
 
+  const activateForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    addressField.readOnly = true;
+    guestsSelect.addEventListener('change', validateRoomsAngGuests);
+    roomsSelect.addEventListener('change', validateRoomsAngGuests);
+    typeOfHouse.addEventListener('change', setPriceAttributes);
+    timeIn.addEventListener('change', validateTimeIn);
+    timeOut.addEventListener('change', validateTimeOut);
+  };
+
+  const setAddressValue = function (isMainPin) {
+    if (isMainPin) {
+      addressField.value = `${Math.round(window.pin.inactiveX)}, ${Math.round(window.pin.inactiveY)}`;
+    } else {
+      addressField.value = `${Math.round(window.pin.activeX)}, ${Math.round(window.pin.activeY)}`;
+    }
+  };
+
   window.form = {
-    adForm: adForm,
     selects: selects,
     fieldsets: fieldsets,
-    roomsSelect: roomsSelect,
-    guestsSelect: guestsSelect,
-    typeOfHouse: typeOfHouse,
-    timeIn: timeIn,
-    timeOut: timeOut,
-    enableFormElements,
-    validateRoomsAngGuests: validateRoomsAngGuests,
-    setPriceAttributes: setPriceAttributes,
-    validateTimeIn: validateTimeIn,
-    validateTimeOut: validateTimeOut,
+    activate: activateForm,
+    setAddress: setAddressValue,
+    addressField: addressField,
   };
 })();
