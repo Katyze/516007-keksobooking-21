@@ -1,24 +1,6 @@
 'use strict';
 
 (function () {
-  const offerTypes = {
-    flat: {
-      label: 'Квартира',
-      minPrice: 1000,
-    },
-    bungalow: {
-      label: 'Бунгало',
-      minPrice: 0,
-    },
-    house: {
-      label: 'Дом',
-      minPrice: 5000,
-    },
-    palace: {
-      label: 'Дворец',
-      minPrice: 10000,
-    },
-  };
 
   const createCard = function (card) {
     const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
@@ -38,7 +20,7 @@
     titleElement.textContent = card.offer.title;
     addressElement.textContent = card.offer.address;
     priceElement.textContent = `${card.offer.price} ₽/ночь`;
-    typeElement.textContent = offerTypes[card.offer.type].label;
+    typeElement.textContent = window.data.apartments[card.offer.type].label;
     capacityElement.textContent = `${card.offer.rooms} комнаты для ${card.offer.guests} гостей`;
     timeElement.textContent = `Заезд после ${card.offer.checkin} выезд до ${card.offer.checkout}`;
     descriptionElement.textContent = card.offer.description;
@@ -65,8 +47,16 @@
     return cardElement;
   };
 
-  window.card = {
-    offerTypes: offerTypes,
-    createCard: createCard,
+  const addCard = function (offerId, parentContainer, insertBeforeContainer) {
+    const fragmentCard = document.createDocumentFragment();
+    const targetOffer = window.offer.offers.find((offer) => {
+      return offer.id === offerId;
+    });
+    const card = createCard(targetOffer);
+
+    fragmentCard.appendChild(card);
+    parentContainer.insertBefore(fragmentCard, insertBeforeContainer);
   };
+
+  window.addCard = addCard;
 })();
