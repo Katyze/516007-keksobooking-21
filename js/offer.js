@@ -40,7 +40,5 @@
 
   const offers = createOffers(window.data.offerQuantity);
 
-  window.offer = {
-    offers: offers,
-  };
+  window.offers = offers;
 })();
