@@ -18,6 +18,11 @@
   const MAX_GUESTS = 10;
   const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
   const OFFERS_QUANTITY = 8;
+  const MAP_SIZE_Y_MIN = 130;
+  const MAP_SIZE_Y_MAX = 630;
+  const MAP_SIZE_X_MAX = 1200;
+  const MAP_SIZE_X_MIN = 0;
+
 
   const offerTypes = {
     flat: {
@@ -56,6 +61,10 @@
     minGuests: MIN_GUESTS,
     maxGuests: MAX_GUESTS,
     timeCheck: TIME_CHECK_IN_OUT,
-    offerQuantity: OFFERS_QUANTITY
+    offerQuantity: OFFERS_QUANTITY,
+    mapTop: MAP_SIZE_Y_MIN,
+    mapBottom: MAP_SIZE_Y_MAX,
+    mapRight: MAP_SIZE_X_MAX,
+    mapLeft: MAP_SIZE_X_MIN
   };
 })();

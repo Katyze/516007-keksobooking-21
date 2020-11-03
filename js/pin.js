@@ -4,8 +4,6 @@
   const PIN_WIDTH = 25;
   const PIN_HEIGHT = 70;
   const MAIN_PIN_TAIL = 22;
-  const mapElement = document.querySelector('.map');
-  const mapPinsElement = document.querySelector('.map__pins');
 
   const mainPin = document.querySelector('.map__pin--main');
 
@@ -19,8 +17,9 @@
   const mainPinInActiveX = mainPin.offsetLeft + mainPinWidth / 2;
   const mainPinInActiveY = mainPin.offsetTop + mainPinHeight / 2;
 
+  const pinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
+
   const createPin = function (offer) {
-    const pinTemplateElement = document.querySelector('#pin').content.querySelector('.map__pin');
     const pinElement = pinTemplateElement.cloneNode(true);
     const img = pinElement.querySelector('img');
 
@@ -36,14 +35,30 @@
   const renderPins = function (offers) {
     const fragment = document.createDocumentFragment();
     for (let i = 0; i < offers.length; i++) {
-      fragment.appendChild(createPin(window.offer.offers[i]));
+      fragment.appendChild(createPin(offers[i]));
     }
-    mapPinsElement.appendChild(fragment);
+    window.map.pinsElement.appendChild(fragment);
   };
 
+  const onSuccess = function (result) {
+    for (let i = 0; i < result.length; i++) {
+      const offer = result[i];
+      offer.id = i + 1;
+    }
+
+    renderPins(result);
+
+    window.offers = result;
+  };
+
+
+  let isPageActive = false;
   const activateMap = function () {
-    mapElement.classList.remove('map--faded');
-    renderPins(window.offer.offers);
+    if (!isPageActive) {
+      window.map.element.classList.remove('map--faded');
+      window.load(onSuccess, window.onError);
+      isPageActive = true;
+    }
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
@@ -70,21 +85,22 @@
 
         let newCoordY = mainPin.offsetTop - shift.y;
         let newCoordX = mainPin.offsetLeft - shift.x;
+        const halfPin = mainPinWidth / 2;
 
-        if (newCoordX < 20) {
-          newCoordX = 20;
+        if (newCoordX < (window.data.mapLeft - halfPin)) {
+          newCoordX = window.data.mapLeft - halfPin;
         }
 
-        if (newCoordX > 1120) {
-          newCoordX = 1120;
+        if (newCoordX > (window.data.mapRight - halfPin)) {
+          newCoordX = window.data.mapRight - halfPin;
         }
 
-        if (newCoordY < 100) {
-          newCoordY = 100;
+        if (newCoordY < window.data.mapTop) {
+          newCoordY = window.data.mapTop;
         }
 
-        if (newCoordY > 620) {
-          newCoordY = 620;
+        if (newCoordY > window.data.mapBottom) {
+          newCoordY = window.data.mapBottom;
         }
 
         mainPin.style.top = newCoordY + 'px';
@@ -116,8 +132,6 @@
 
   window.pin = {
     activate: activateMap,
-    mapPinsElement: mapPinsElement,
-    mapElement: mapElement,
     activeX: mainPinActiveX,
     activeY: mainPinActiveY,
     inactiveX: mainPinInActiveX,

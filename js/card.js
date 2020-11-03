@@ -49,7 +49,7 @@
 
   const addCard = function (offerId, parentContainer, insertBeforeContainer) {
     const fragmentCard = document.createDocumentFragment();
-    const targetOffer = window.offer.offers.find((offer) => {
+    const targetOffer = window.offers.find((offer) => {
       return offer.id === offerId;
     });
     const card = createCard(targetOffer);

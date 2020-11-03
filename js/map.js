@@ -2,8 +2,10 @@
 
 (function () {
   const filtersContainer = document.querySelector('.map__filters-container');
+  const mapElement = document.querySelector('.map');
+  const mapPinsElement = document.querySelector('.map__pins');
 
-  window.pin.mapPinsElement.addEventListener('click', function (evt) {
+  mapPinsElement.addEventListener('click', function (evt) {
     const target = evt.target;
     const targetParent = target.closest('.map__pin:not(.map__pin--main)');
 
@@ -15,7 +17,7 @@
         activeCard.remove();
       }
 
-      window.addCard(pinId, window.pin.mapElement, filtersContainer);
+      window.addCard(pinId, mapElement, filtersContainer);
 
       const closePopup = document.querySelector('.popup__close');
 
@@ -34,4 +36,9 @@
       });
     }
   });
+
+  window.map = {
+    element: mapElement,
+    pinsElement: mapPinsElement,
+  };
 })();
