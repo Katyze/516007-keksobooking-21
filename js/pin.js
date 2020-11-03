@@ -40,11 +40,23 @@
     window.map.pinsElement.appendChild(fragment);
   };
 
+  const onSuccess = function (result) {
+    for (let i = 0; i < result.length; i++) {
+      const offer = result[i];
+      offer.id = i + 1;
+    }
+
+    renderPins(result);
+
+    window.offers = result;
+  };
+
+
   let isPageActive = false;
   const activateMap = function () {
     if (!isPageActive) {
       window.map.element.classList.remove('map--faded');
-      renderPins(window.offers);
+      window.load(onSuccess, window.onError);
       isPageActive = true;
     }
   };
