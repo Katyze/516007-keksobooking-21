@@ -51,19 +51,24 @@
     window.offers = result;
   };
 
-
   let isPageActive = false;
+
   const activateMap = function () {
     if (!isPageActive) {
       window.map.element.classList.remove('map--faded');
-      window.load(onSuccess, window.onError);
+      window.load(onSuccess, window.message.error);
       isPageActive = true;
     }
   };
 
+  const deactivateMap = function () {
+    window.map.element.classList.add('map--faded');
+    window.map.pinsElement.remove();
+  };
+
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.button === 0) {
-      window.activatePage();
+      window.main.activate();
 
       let startCoords = {
         x: evt.clientX,
@@ -126,12 +131,13 @@
 
   mainPin.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
-      window.activatePage();
+      window.main.activate();
     }
   });
 
   window.pin = {
     activate: activateMap,
+    deactivate: deactivateMap,
     activeX: mainPinActiveX,
     activeY: mainPinActiveY,
     inactiveX: mainPinInActiveX,
