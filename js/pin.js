@@ -62,9 +62,22 @@
   };
 
   const deactivateMap = function () {
+    const pin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    const popup = document.querySelector('.popup');
+
     window.map.element.classList.add('map--faded');
-    window.map.pinsElement.remove();
+
+    for (let i = 0; i < pin.length; i++) {
+      pin[i].remove();
+    }
+
+    if (popup) {
+      popup.remove();
+    }
+
+    isPageActive = false;
   };
+
 
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.button === 0) {
