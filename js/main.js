@@ -2,15 +2,18 @@
 
 (function () {
 
-  window.form.setAddress(true);
-
   const activatePage = function () {
     window.pin.activate();
-    window.form.setAddress(false);
-    window.util.enable(window.form.selects);
-    window.util.enable(window.form.fieldsets);
     window.form.activate();
   };
 
-  window.activatePage = activatePage;
+  const deactivatePage = function () {
+    window.pin.deactivate();
+    window.form.deactivate();
+  };
+
+  window.main = {
+    activate: activatePage,
+    deactivate: deactivatePage
+  };
 })();

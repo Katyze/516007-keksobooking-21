@@ -20,6 +20,8 @@
   window.util.disable(selects);
   window.util.disable(fieldsets);
 
+  addressField.readOnly = true;
+
   const validateRoomsAngGuests = function () {
     const roomsValue = Number(roomsSelect.value);
     const guestsValue = Number(guestsSelect.value);
@@ -35,31 +37,37 @@
     guestsSelect.reportValidity();
   };
 
-  validateRoomsAngGuests();
+  guestsSelect.addEventListener('change', validateRoomsAngGuests);
 
-  const setPriceAttributes = function () {
+  roomsSelect.addEventListener('change', validateRoomsAngGuests);
+
+  typeOfHouse.addEventListener('change', function () {
     const priceForSelectedValue = window.data.apartments[typeOfHouse.value].minPrice;
 
     priceForNight.setAttribute('min', priceForSelectedValue);
     priceForNight.setAttribute('placeholder', priceForSelectedValue);
-  };
+  });
 
-  const validateTimeIn = function () {
+  timeIn.addEventListener('change', function () {
     timeOut.value = timeIn.value;
-  };
+  });
 
-  const validateTimeOut = function () {
+  timeOut.addEventListener('change', function () {
     timeIn.value = timeOut.value;
-  };
+  });
 
   const activateForm = function () {
+    setAddressValue(false);
+    window.util.enable(selects);
+    window.util.enable(fieldsets);
     adForm.classList.remove('ad-form--disabled');
-    addressField.readOnly = true;
-    guestsSelect.addEventListener('change', validateRoomsAngGuests);
-    roomsSelect.addEventListener('change', validateRoomsAngGuests);
-    typeOfHouse.addEventListener('change', setPriceAttributes);
-    timeIn.addEventListener('change', validateTimeIn);
-    timeOut.addEventListener('change', validateTimeOut);
+  };
+
+  const deactivateForm = function () {
+    setAddressValue(true);
+    window.util.disable(selects);
+    window.util.disable(fieldsets);
+    adForm.classList.add('ad-form--disabled');
   };
 
   const setAddressValue = function (isMainPin) {
@@ -70,11 +78,21 @@
     }
   };
 
+  setAddressValue(true);
+
+  adForm.addEventListener('submit', function (evt) {
+    const data = new FormData(adForm);
+
+    window.upload(data, window.message.success, window.message.error);
+    evt.preventDefault();
+    adForm.reset();
+    window.main.deactivate();
+  });
+
+
   window.form = {
-    selects: selects,
-    fieldsets: fieldsets,
-    activate: activateForm,
-    setAddress: setAddressValue,
     addressField: addressField,
+    activate: activateForm,
+    deactivate: deactivateForm
   };
 })();

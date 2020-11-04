@@ -4,10 +4,11 @@
   const templateError = document.querySelector('#error').content.querySelector('.error');
   const main = document.querySelector('main');
   const errorMessage = templateError.querySelector('.error__message');
+  const templateSuccess = document.querySelector('#success').content.querySelector('.success');
 
   const onPopupKeydown = function (evt) {
     if (evt.key === 'Escape') {
-      closeError();
+      closePopup();
     }
   };
 
@@ -16,19 +17,39 @@
     const error = templateError.cloneNode(true);
 
     error.addEventListener('click', function () {
-      closeError();
+      closePopup();
     });
 
     document.addEventListener('keydown', onPopupKeydown);
     main.appendChild(error);
   };
 
-  const closeError = function () {
+  const closePopup = function () {
     const error = main.querySelector('.error');
+    const success = main.querySelector('.success');
 
-    error.remove();
+    if (error) {
+      error.remove();
+    } else {
+      success.remove();
+    }
+
     document.removeEventListener('keydown', onPopupKeydown);
   };
 
-  window.onError = onError;
+  const onSuccessUpload = function () {
+    const success = templateSuccess.cloneNode(true);
+
+    success.addEventListener('click', function () {
+      closePopup();
+    });
+
+    document.addEventListener('keydown', onPopupKeydown);
+    main.appendChild(success);
+  };
+
+  window.message = {
+    error: onError,
+    success: onSuccessUpload
+  };
 })();

@@ -1,7 +1,6 @@
 'use strict';
 
 (function () {
-
   const createCard = function (card) {
     const cardTemplateElement = document.querySelector('#card').content.querySelector('.map__card');
     const cardElement = cardTemplateElement.cloneNode(true);
