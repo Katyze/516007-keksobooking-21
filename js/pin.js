@@ -4,6 +4,9 @@
   const PIN_WIDTH = 25;
   const PIN_HEIGHT = 70;
   const MAIN_PIN_TAIL = 22;
+  const DEFAULT_PIN_X = 570;
+  const DEFAULT_PIN_Y = 350;
+
 
   const mainPin = document.querySelector('.map__pin--main');
 
@@ -56,7 +59,7 @@
   const activateMap = function () {
     if (!isPageActive) {
       window.map.element.classList.remove('map--faded');
-      window.load(onSuccess, window.message.error);
+      window.backend.load(onSuccess, window.message.error);
       isPageActive = true;
     }
   };
@@ -148,6 +151,11 @@
     }
   });
 
+  const defaultPin = function () {
+    mainPin.style.top = DEFAULT_PIN_Y + 'px';
+    mainPin.style.left = DEFAULT_PIN_X + 'px';
+  };
+
   window.pin = {
     activate: activateMap,
     deactivate: deactivateMap,
@@ -155,5 +163,6 @@
     activeY: mainPinActiveY,
     inactiveX: mainPinInActiveX,
     inactiveY: mainPinInActiveY,
+    default: defaultPin,
   };
 })();
