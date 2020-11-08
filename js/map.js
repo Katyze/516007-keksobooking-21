@@ -21,19 +21,22 @@
 
       const closePopup = document.querySelector('.popup__close');
 
-      closePopup.addEventListener('mousedown', function (closeEvent) {
-        const parentCard = document.querySelector('.map__card');
-        if (closeEvent.button === 0) {
-          parentCard.remove();
-        }
-      });
+      if (activeCard) {
+        closePopup.addEventListener('mousedown', function (closeEvent) {
+          const parentCard = document.querySelector('.map__card');
+          if (closeEvent.button === 0) {
+            parentCard.remove();
+          }
+        });
 
-      closePopup.addEventListener('keydown', function (closeEvent) {
-        const parentCard = document.querySelector('.map__card');
-        if (closeEvent.key === 'Enter') {
-          parentCard.remove();
-        }
-      });
+
+        document.addEventListener('keydown', function (closeEvent) {
+          const parentCard = document.querySelector('.map__card');
+          if (closeEvent.key === 'Escape') {
+            parentCard.remove();
+          }
+        });
+      }
     }
   });
 
