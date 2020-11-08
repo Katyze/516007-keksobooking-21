@@ -37,7 +37,9 @@
 
   const renderPins = function (offers) {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < MAX_PIN_ON_MAP; i++) {
+    const amount = offers.slice(0, MAX_PIN_ON_MAP);
+
+    for (let i = 0; i < amount.length; i++) {
       fragment.appendChild(createPin(offers[i]));
     }
     window.map.pinsElement.appendChild(fragment);
@@ -48,7 +50,7 @@
 
     for (let i = 0; i < pins.length; i++) {
       pins[i].remove();
-    };
+    }
   };
 
   const onSuccess = function (result) {

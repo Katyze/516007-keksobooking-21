@@ -1,16 +1,21 @@
 'use strict';
 
 (function () {
-  let getData = [];
+  const ANY_VALUE = 'any';
   const selectType = document.querySelector('#housing-type');
 
   function updatePins(typeOfHouse) {
     window.pin.remove();
 
-    const sameTypeOfHouse = getData.filter(function (pin) {
+    const sameTypeOfHouse = window.offers.filter(function (pin) {
       return pin.offer.type === typeOfHouse;
     });
-    window.pin.render(sameTypeOfHouse);
+
+    if (typeOfHouse === ANY_VALUE) {
+      window.pin.render(window.offers);
+    } else {
+      window.pin.render(sameTypeOfHouse);
+    }
   }
 
   selectType.addEventListener('change', function (evt) {
@@ -19,5 +24,4 @@
     updatePins(typeOfHouse);
     window.card.remove();
   });
-
 })();
