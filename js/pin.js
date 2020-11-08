@@ -4,6 +4,9 @@
   const PIN_WIDTH = 25;
   const PIN_HEIGHT = 70;
   const MAIN_PIN_TAIL = 22;
+  const DEFAULT_PIN_X = 570;
+  const DEFAULT_PIN_Y = 350;
+  const MAX_PIN_ON_MAP = 5;
 
   const mainPin = document.querySelector('.map__pin--main');
 
@@ -34,10 +37,20 @@
 
   const renderPins = function (offers) {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < offers.length; i++) {
+    const amount = offers.slice(0, MAX_PIN_ON_MAP);
+
+    for (let i = 0; i < amount.length; i++) {
       fragment.appendChild(createPin(offers[i]));
     }
     window.map.pinsElement.appendChild(fragment);
+  };
+
+  const removePins = function () {
+    const pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    for (let i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    }
   };
 
   const onSuccess = function (result) {
@@ -56,25 +69,15 @@
   const activateMap = function () {
     if (!isPageActive) {
       window.map.element.classList.remove('map--faded');
-      window.load(onSuccess, window.message.error);
+      window.backend.load(onSuccess, window.message.error);
       isPageActive = true;
     }
   };
 
   const deactivateMap = function () {
-    const pin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    const popup = document.querySelector('.popup');
-
     window.map.element.classList.add('map--faded');
-
-    for (let i = 0; i < pin.length; i++) {
-      pin[i].remove();
-    }
-
-    if (popup) {
-      popup.remove();
-    }
-
+    window.card.remove();
+    removePins();
     isPageActive = false;
   };
 
@@ -148,12 +151,20 @@
     }
   });
 
+  const defaultPin = function () {
+    mainPin.style.top = DEFAULT_PIN_Y + 'px';
+    mainPin.style.left = DEFAULT_PIN_X + 'px';
+  };
+
   window.pin = {
+    render: renderPins,
+    remove: removePins,
     activate: activateMap,
     deactivate: deactivateMap,
     activeX: mainPinActiveX,
     activeY: mainPinActiveY,
     inactiveX: mainPinInActiveX,
     inactiveY: mainPinInActiveY,
+    default: defaultPin,
   };
 })();

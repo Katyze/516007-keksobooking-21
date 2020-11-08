@@ -6,6 +6,7 @@
 
   const filterForm = document.querySelector('.map__filters');
   const adForm = document.querySelector('.ad-form');
+  const resetForm = document.querySelector('.ad-form__reset');
   const addressField = document.querySelector('#address');
   const selects = filterForm.querySelectorAll('select');
   const fieldsets = adForm.querySelectorAll('fieldset');
@@ -36,6 +37,8 @@
     }
     guestsSelect.reportValidity();
   };
+
+  validateRoomsAngGuests();
 
   guestsSelect.addEventListener('change', validateRoomsAngGuests);
 
@@ -68,6 +71,7 @@
     window.util.disable(selects);
     window.util.disable(fieldsets);
     adForm.classList.add('ad-form--disabled');
+    window.pin.default();
   };
 
   const setAddressValue = function (isMainPin) {
@@ -83,12 +87,23 @@
   adForm.addEventListener('submit', function (evt) {
     const data = new FormData(adForm);
 
-    window.upload(data, window.message.success, window.message.error);
+    window.backend.upload(data, window.message.success, window.message.error);
     evt.preventDefault();
     adForm.reset();
     window.main.deactivate();
   });
 
+  resetForm.addEventListener('keydown', function (evt) {
+    if (evt.key === 'Enter') {
+      window.main.deactivate();
+    }
+  });
+
+  resetForm.addEventListener('mousedown', function (evt) {
+    if (evt.button === 0) {
+      window.main.deactivate();
+    }
+  });
 
   window.form = {
     addressField: addressField,

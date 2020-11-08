@@ -57,5 +57,15 @@
     parentContainer.insertBefore(fragmentCard, insertBeforeContainer);
   };
 
-  window.addCard = addCard;
+  const removeCard = function () {
+    const popup = document.querySelector('.popup');
+    if (popup) {
+      popup.remove();
+    }
+  };
+
+  window.card = {
+    add: addCard,
+    remove: removeCard
+  };
 })();
