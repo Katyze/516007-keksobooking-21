@@ -17,7 +17,7 @@
         activeCard.remove();
       }
 
-      window.addCard(pinId, mapElement, filtersContainer);
+      window.card.add(pinId, mapElement, filtersContainer);
 
       const closePopup = document.querySelector('.popup__close');
 

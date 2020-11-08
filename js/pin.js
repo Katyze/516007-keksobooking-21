@@ -6,7 +6,7 @@
   const MAIN_PIN_TAIL = 22;
   const DEFAULT_PIN_X = 570;
   const DEFAULT_PIN_Y = 350;
-
+  const MAX_PIN_ON_MAP = 5;
 
   const mainPin = document.querySelector('.map__pin--main');
 
@@ -37,10 +37,18 @@
 
   const renderPins = function (offers) {
     const fragment = document.createDocumentFragment();
-    for (let i = 0; i < offers.length; i++) {
+    for (let i = 0; i < MAX_PIN_ON_MAP; i++) {
       fragment.appendChild(createPin(offers[i]));
     }
     window.map.pinsElement.appendChild(fragment);
+  };
+
+  const removePins = function () {
+    const pins = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    for (let i = 0; i < pins.length; i++) {
+      pins[i].remove();
+    };
   };
 
   const onSuccess = function (result) {
@@ -65,19 +73,9 @@
   };
 
   const deactivateMap = function () {
-    const pin = document.querySelectorAll('.map__pin:not(.map__pin--main)');
-    const popup = document.querySelector('.popup');
-
     window.map.element.classList.add('map--faded');
-
-    for (let i = 0; i < pin.length; i++) {
-      pin[i].remove();
-    }
-
-    if (popup) {
-      popup.remove();
-    }
-
+    window.card.remove();
+    removePins();
     isPageActive = false;
   };
 
@@ -157,6 +155,8 @@
   };
 
   window.pin = {
+    render: renderPins,
+    remove: removePins,
     activate: activateMap,
     deactivate: deactivateMap,
     activeX: mainPinActiveX,
