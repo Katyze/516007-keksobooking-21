@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  const PIN_WIDTH = 25;
-  const PIN_HEIGHT = 70;
   const MAIN_PIN_TAIL = 22;
   const DEFAULT_PIN_X = 570;
   const DEFAULT_PIN_Y = 350;
@@ -26,8 +24,8 @@
     const pinElement = pinTemplateElement.cloneNode(true);
     const img = pinElement.querySelector('img');
 
-    pinElement.style.left = offer.location.x + PIN_WIDTH + 'px';
-    pinElement.style.top = offer.location.y + PIN_HEIGHT + 'px';
+    pinElement.style.left = offer.location.x + 'px';
+    pinElement.style.top = offer.location.y + 'px';
     img.src = offer.author.avatar;
     img.alt = offer.offer.title;
     pinElement.dataset.id = offer.id;
@@ -37,9 +35,9 @@
 
   const renderPins = function (offers) {
     const fragment = document.createDocumentFragment();
-    const amount = offers.slice(0, MAX_PIN_ON_MAP);
+    const array = offers.slice(0, MAX_PIN_ON_MAP);
 
-    for (let i = 0; i < amount.length; i++) {
+    for (let i = 0; i < array.length; i++) {
       fragment.appendChild(createPin(offers[i]));
     }
     window.map.pinsElement.appendChild(fragment);
@@ -67,11 +65,9 @@
   let isPageActive = false;
 
   const activateMap = function () {
-    if (!isPageActive) {
-      window.map.element.classList.remove('map--faded');
-      window.backend.load(onSuccess, window.message.error);
-      isPageActive = true;
-    }
+    window.map.element.classList.remove('map--faded');
+    window.backend.load(onSuccess, window.message.error);
+    isPageActive = true;
   };
 
   const deactivateMap = function () {
@@ -81,10 +77,11 @@
     isPageActive = false;
   };
 
-
   mainPin.addEventListener('mousedown', function (evt) {
     if (evt.button === 0) {
-      window.main.activate();
+      if (!isPageActive) {
+        window.main.activate();
+      }
 
       let startCoords = {
         x: evt.clientX,
@@ -151,7 +148,7 @@
     }
   });
 
-  const defaultPin = function () {
+  const setDefaultCoords = function () {
     mainPin.style.top = DEFAULT_PIN_Y + 'px';
     mainPin.style.left = DEFAULT_PIN_X + 'px';
   };
@@ -165,6 +162,6 @@
     activeY: mainPinActiveY,
     inactiveX: mainPinInActiveX,
     inactiveY: mainPinInActiveY,
-    default: defaultPin,
+    default: setDefaultCoords,
   };
 })();
