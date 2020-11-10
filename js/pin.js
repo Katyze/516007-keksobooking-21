@@ -65,9 +65,9 @@
   let isPageActive = false;
 
   const activateMap = function () {
-      window.map.element.classList.remove('map--faded');
-      window.backend.load(onSuccess, window.message.error);
-      isPageActive = true;
+    window.map.element.classList.remove('map--faded');
+    window.backend.load(onSuccess, window.message.error);
+    isPageActive = true;
   };
 
   const deactivateMap = function () {
