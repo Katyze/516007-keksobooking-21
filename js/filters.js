@@ -8,6 +8,9 @@
   const housingRooms = document.querySelector('#housing-rooms');
   const housingGuests = document.querySelector('#housing-guests');
 
+  const renderPins = window.pin.render;
+  const debounce = window.util.debounce(renderPins);
+
   const PriceToRoom = {
     low: {
       min: 0,
@@ -27,7 +30,7 @@
   mapForm.addEventListener('change', function () {
     window.pin.remove();
     window.card.remove();
-    window.debounce(updateData(window.offers));
+    debounce(updateData(window.offers));
   });
 
   const checkHousingType = function (pin) {
@@ -68,16 +71,21 @@
       return pin.offer.features.indexOf(feature.value) >= 0;
     });
   };
+  const updateData = function (offers) {
+    let filteredOffers = [];
 
-  const updateData = function (hotels) {
-    const hotelsFilter = hotels.filter(function (hotel) {
-      return checkHousingType(hotel) &
-        checkHousingRooms(hotel) &
-        checkHousingGuests(hotel) &
-        checkHousingPrice(hotel) &
-        checkHousingFeatures(hotel);
-    });
-
-    window.pin.render(hotelsFilter);
+    for (let i = 0; i < offers.length; i++) {
+      if (checkHousingType(offers[i]) &&
+        checkHousingRooms(offers[i]) &&
+        checkHousingGuests(offers[i]) &&
+        checkHousingPrice(offers[i]) &&
+        checkHousingFeatures(offers[i])) {
+        filteredOffers.push(offers[i]);
+      }
+      if (filteredOffers.length === window.pin.max) {
+        break;
+      }
+    }
+    return filteredOffers;
   };
 })();

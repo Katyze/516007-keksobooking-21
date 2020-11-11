@@ -21,14 +21,14 @@
 
       const closePopup = document.querySelector('.popup__close');
 
-      const onPopupKeydown = function (evt) {
-        if (evt.key === 'Escape') {
+      const onPopupKeydown = function (keyEvent) {
+        if (keyEvent.key === 'Escape') {
           closeCard();
         }
       };
 
-      const onPopupMousedown = function (evt) {
-        if (evt.button === 0) {
+      const onPopupMousedown = function (mouseEvent) {
+        if (mouseEvent.button === 0) {
           closeCard();
         }
       };

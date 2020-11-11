@@ -1,13 +1,12 @@
 'use strict';
 
 (function () {
-  const TIME_CHECK_IN_OUT = ['12:00', '13:00', '14:00'];
   const MAP_SIZE_Y_MIN = 43;
   const MAP_SIZE_Y_MAX = 542;
   const MAP_SIZE_X_MAX = 1200;
   const MAP_SIZE_X_MIN = 0;
 
-  const offerTypes = {
+  const OfferTypes = {
     flat: {
       label: 'Квартира',
       minPrice: 1000,
@@ -27,8 +26,7 @@
   };
 
   window.data = {
-    apartments: offerTypes,
-    timeCheck: TIME_CHECK_IN_OUT,
+    apartments: OfferTypes,
     mapTop: MAP_SIZE_Y_MIN,
     mapBottom: MAP_SIZE_Y_MAX,
     mapRight: MAP_SIZE_X_MAX,

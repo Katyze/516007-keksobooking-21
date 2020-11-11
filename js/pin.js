@@ -163,5 +163,6 @@
     inactiveX: mainPinInActiveX,
     inactiveY: mainPinInActiveY,
     default: setDefaultCoords,
+    max: MAX_PIN_ON_MAP
   };
 })();
