@@ -2,11 +2,12 @@
 
 (function () {
   const MAP_SIZE_Y_MIN = 43;
-  const MAP_SIZE_Y_MAX = 542;
-  const MAP_SIZE_X_MAX = 1200;
-  const MAP_SIZE_X_MIN = 0;
+  const MAP_SIZE_Y_MAX = 543;
+  const MAP_SIZE_X_MAX = 1199;
+  const MAP_SIZE_X_MIN = -1;
+  const MAIN_BUTTON = 0;
 
-  const OfferTypes = {
+  const offerTypes = {
     flat: {
       label: 'Квартира',
       minPrice: 1000,
@@ -26,10 +27,11 @@
   };
 
   window.data = {
-    apartments: OfferTypes,
+    apartments: offerTypes,
     mapTop: MAP_SIZE_Y_MIN,
     mapBottom: MAP_SIZE_Y_MAX,
     mapRight: MAP_SIZE_X_MAX,
-    mapLeft: MAP_SIZE_X_MIN
+    mapLeft: MAP_SIZE_X_MIN,
+    mainButton: MAIN_BUTTON
   };
 })();

@@ -11,7 +11,7 @@
   const renderPins = window.pin.render;
   const debounce = window.util.debounce(renderPins);
 
-  const PriceToRoom = {
+  const priceToRoom = {
     low: {
       min: 0,
       max: 9999
@@ -36,38 +36,35 @@
   const checkHousingType = function (pin) {
     if (housingType.value === ANY_VALUE) {
       return true;
-    } else {
-      return pin.offer.type === housingType.value;
     }
+    return pin.offer.type === housingType.value;
   };
 
   const checkHousingRooms = function (pin) {
     if (housingRooms.value === ANY_VALUE) {
       return true;
-    } else {
-      return pin.offer.rooms.toString() === housingRooms.value;
     }
+    return pin.offer.rooms.toString() === housingRooms.value;
   };
 
   const checkHousingGuests = function (pin) {
     if (housingGuests.value === ANY_VALUE) {
       return true;
-    } else {
-      return pin.offer.guests.toString() === housingGuests.value;
     }
+    return pin.offer.guests.toString() === housingGuests.value;
   };
 
   const checkHousingPrice = function (pin) {
     if (housingPrice.value === ANY_VALUE) {
       return true;
     }
-    return pin.offer.price >= PriceToRoom[housingPrice.value].min && pin.offer.price <= PriceToRoom[housingPrice.value].max;
+    return pin.offer.price >= priceToRoom[housingPrice.value].min && pin.offer.price <= priceToRoom[housingPrice.value].max;
   };
 
   const checkHousingFeatures = function (pin) {
-    let housingCheckbox = document.querySelectorAll('.map__checkbox:checked');
+    let housingCheckboxes = document.querySelectorAll('.map__checkbox:checked');
 
-    return Array.from(housingCheckbox).every(function (feature) {
+    return Array.from(housingCheckboxes).every(function (feature) {
       return pin.offer.features.indexOf(feature.value) >= 0;
     });
   };

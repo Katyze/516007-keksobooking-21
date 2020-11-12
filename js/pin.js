@@ -78,7 +78,7 @@
   };
 
   mainPin.addEventListener('mousedown', function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === window.data.mainButton) {
       if (!isPageActive) {
         window.main.activate();
       }

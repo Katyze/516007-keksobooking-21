@@ -67,6 +67,8 @@
   };
 
   const deactivateForm = function () {
+    filterForm.reset();
+    adForm.reset();
     setAddressValue(true);
     window.util.disable(selects);
     window.util.disable(fieldsets);
@@ -89,7 +91,6 @@
 
     window.backend.upload(data, window.message.success, window.message.error);
     evt.preventDefault();
-    adForm.reset();
     window.main.deactivate();
   });
 
@@ -100,7 +101,7 @@
   });
 
   resetForm.addEventListener('mousedown', function (evt) {
-    if (evt.button === 0) {
+    if (evt.button === window.data.mainButton) {
       window.main.deactivate();
     }
   });
