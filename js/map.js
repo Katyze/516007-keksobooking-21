@@ -28,7 +28,7 @@
       };
 
       const onPopupMousedown = function (mouseEvent) {
-        if (mouseEvent.button === 0) {
+        if (mouseEvent.button === window.data.mainButton) {
           closeCard();
         }
       };

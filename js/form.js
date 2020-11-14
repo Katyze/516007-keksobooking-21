@@ -16,7 +16,7 @@
   const priceForNight = document.querySelector('#price');
   const timeIn = document.querySelector('#timein');
   const timeOut = document.querySelector('#timeout');
-
+  const defaultPlaceholder = 1000;
 
   window.util.disable(selects);
   window.util.disable(fieldsets);
@@ -69,6 +69,7 @@
   const deactivateForm = function () {
     filterForm.reset();
     adForm.reset();
+    priceForNight.setAttribute('placeholder', defaultPlaceholder);
     setAddressValue(true);
     window.util.disable(selects);
     window.util.disable(fieldsets);

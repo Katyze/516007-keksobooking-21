@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  const MAIN_PIN_TAIL = 22;
+  const MAIN_PIN_TAIL = 16;
   const DEFAULT_PIN_X = 570;
   const DEFAULT_PIN_Y = 350;
   const MAX_PIN_ON_MAP = 5;
